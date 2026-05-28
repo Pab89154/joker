@@ -21,13 +21,12 @@ Open http://localhost:5173
 
 Dad jokes, Puns, One-liners, Knock-knock, Observational, Programming / tech, Science, Dark humor
 
-## GitHub Pages
+## Live website
 
-To put the easy version online for free:
+**https://pab89154.github.io/joker/**
 
-1. Push this repo to GitHub
-2. Go to **Settings → Pages**
-3. Set source to **main** branch, folder **/Joker**
-4. Your site will be at `https://YOUR-USERNAME.github.io/joker/`
+(GitHub Pages — may take 1–2 minutes to go live after setup.)
 
-(Ask a parent to help rename the repo to `joker` if you want that exact URL.)
+## GitHub Pages setup
+
+Already configured! The site is served from the `docs/` folder.
