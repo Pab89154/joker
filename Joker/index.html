@@ -15,15 +15,19 @@
       }
 
       :root {
-        --bg: #0d0a14;
-        --surface: #1a1228;
-        --surface-hover: #241a35;
-        --purple-light: #a78bfa;
-        --green: #22c55e;
-        --gold: #eab308;
-        --text: #f1f0f5;
-        --text-muted: #9ca3af;
-        --radius: 12px;
+        --bg: #e0f4ff;
+        --surface: #ffffff;
+        --surface-hover: #fff4e6;
+        --coral: #ff6b6b;
+        --sun: #ffb703;
+        --jungle: #06d6a0;
+        --ocean: #00bbf9;
+        --berry: #ef476f;
+        --purple: #8338ec;
+        --magenta: #ff006e;
+        --text: #1a535c;
+        --text-muted: #4a6670;
+        --radius: 14px;
       }
 
       body {
@@ -41,9 +45,11 @@
         align-items: center;
         padding: 2rem 1.5rem;
         background:
-          radial-gradient(ellipse at 20% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
-          var(--bg);
+          radial-gradient(circle at 10% 10%, rgba(255, 183, 3, 0.35) 0%, transparent 40%),
+          radial-gradient(circle at 90% 15%, rgba(0, 187, 249, 0.35) 0%, transparent 40%),
+          radial-gradient(circle at 80% 85%, rgba(6, 214, 160, 0.35) 0%, transparent 40%),
+          radial-gradient(circle at 15% 80%, rgba(239, 71, 111, 0.25) 0%, transparent 40%),
+          linear-gradient(160deg, #cff4ff 0%, #fff9db 45%, #d8fce6 100%);
       }
 
       .header {
@@ -53,18 +59,23 @@
 
       .logo {
         font-size: 2.5rem;
-        color: var(--green);
+        color: var(--magenta);
+        filter: drop-shadow(0 2px 4px rgba(255, 0, 110, 0.3));
       }
 
       .header h1 {
         font-size: 3rem;
         font-weight: 700;
-        color: var(--purple-light);
+        background: linear-gradient(90deg, var(--ocean), var(--jungle), var(--sun), var(--berry), var(--purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .tagline {
         color: var(--text-muted);
         margin-top: 0.5rem;
+        font-weight: 500;
       }
 
       .main {
@@ -80,7 +91,7 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: var(--text-muted);
+        color: var(--purple);
         margin-bottom: 0.75rem;
         display: block;
       }
@@ -93,33 +104,37 @@
 
       .genre-pill {
         background: var(--surface);
-        border: 1px solid rgba(124, 58, 237, 0.3);
+        border: 2px solid var(--ocean);
         color: var(--text);
         padding: 0.45rem 0.9rem;
         border-radius: 999px;
         font-family: inherit;
         font-size: 0.875rem;
+        font-weight: 600;
         cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 187, 249, 0.15);
       }
 
       .genre-pill.active {
-        background: rgba(124, 58, 237, 0.25);
-        border-color: var(--purple-light);
-        color: var(--purple-light);
+        background: linear-gradient(135deg, var(--ocean), var(--jungle));
+        border-color: transparent;
+        color: white;
+        box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
       }
 
       .generate-btn {
         margin-top: 1rem;
         width: 100%;
-        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        background: linear-gradient(90deg, var(--berry), var(--sun), var(--jungle), var(--ocean));
         color: white;
         border: none;
         padding: 0.85rem 1.5rem;
         border-radius: var(--radius);
         font-family: inherit;
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
+        box-shadow: 0 4px 16px rgba(255, 107, 107, 0.35);
       }
 
       .generate-btn:active {
@@ -128,20 +143,23 @@
 
       .joke-card {
         background: var(--surface);
-        border: 1px solid rgba(124, 58, 237, 0.2);
+        border: 2px solid rgba(0, 187, 249, 0.3);
         border-radius: var(--radius);
         padding: 2rem;
         min-height: 140px;
         display: flex;
         align-items: center;
+        box-shadow: 0 8px 24px rgba(26, 83, 92, 0.1);
       }
 
       .joke-text {
         font-size: 1.2rem;
         line-height: 1.7;
-        border-left: 3px solid var(--gold);
+        border-left: 4px solid transparent;
+        border-image: linear-gradient(to bottom, var(--berry), var(--sun), var(--jungle)) 1;
         padding-left: 1.25rem;
         width: 100%;
+        color: var(--text);
       }
 
       .placeholder {
@@ -155,7 +173,7 @@
         margin-top: 2rem;
         font-size: 0.8rem;
         color: var(--text-muted);
-        opacity: 0.6;
+        font-weight: 600;
       }
     </style>
   </head>
