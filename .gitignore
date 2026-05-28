@@ -1,0 +1,8 @@
+node_modules/
+.env
+dist/
+.DS_Store
+
+# Other projects in this folder — not part of Joker
+spelling-bee-practice/
+animal-encyclopedia/

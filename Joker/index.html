@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Joker — pick a joke genre and get a random joke instantly. Free, fun, no sign-up." />
+    <title>Joker — Joke Generator</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0d0a14;
+        --surface: #1a1228;
+        --surface-hover: #241a35;
+        --purple-light: #a78bfa;
+        --green: #22c55e;
+        --gold: #eab308;
+        --text: #f1f0f5;
+        --text-muted: #9ca3af;
+        --radius: 12px;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1.5rem;
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+          var(--bg);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        color: var(--green);
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--purple-light);
+      }
+
+      .tagline {
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+      }
+
+      .main {
+        width: 100%;
+        max-width: 640px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+        display: block;
+      }
+
+      .genre-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .genre-pill {
+        background: var(--surface);
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        color: var(--text);
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        font-family: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+
+      .genre-pill.active {
+        background: rgba(124, 58, 237, 0.25);
+        border-color: var(--purple-light);
+        color: var(--purple-light);
+      }
+
+      .generate-btn {
+        margin-top: 1rem;
+        width: 100%;
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        color: white;
+        border: none;
+        padding: 0.85rem 1.5rem;
+        border-radius: var(--radius);
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .generate-btn:active {
+        transform: scale(0.98);
+      }
+
+      .joke-card {
+        background: var(--surface);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        border-radius: var(--radius);
+        padding: 2rem;
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+      }
+
+      .joke-text {
+        font-size: 1.2rem;
+        line-height: 1.7;
+        border-left: 3px solid var(--gold);
+        padding-left: 1.25rem;
+        width: 100%;
+      }
+
+      .placeholder {
+        color: var(--text-muted);
+        font-style: italic;
+        width: 100%;
+        text-align: center;
+      }
+
+      .footer {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="logo">♠</div>
+        <h1>Joker</h1>
+        <p class="tagline">Pick a genre. Get a joke. That's it!</p>
+      </header>
+
+      <main class="main">
+        <section>
+          <span class="label">Pick a genre</span>
+          <div class="genre-grid" id="genre-grid"></div>
+          <button class="generate-btn" id="generate-btn">Generate joke</button>
+        </section>
+
+        <section class="joke-card" id="joke-card">
+          <p class="placeholder">Choose a genre and hit generate!</p>
+        </section>
+      </main>
+
+      <footer class="footer">Made with ♠ by Joker</footer>
+    </div>
+
+    <script>
+      const JOKES = {
+        "Dad jokes": [
+          "Why don't eggs tell jokes? They'd crack each other up.",
+          "I'm afraid for the calendar. Its days are numbered.",
+          "What do you call a fake noodle? An impasta!",
+          "Why did the scarecrow win an award? He was outstanding in his field.",
+          "I used to hate facial hair, but then it grew on me.",
+          "What do you call a bear with no teeth? A gummy bear!",
+          "Why don't scientists trust atoms? Because they make up everything.",
+          "How does a penguin build its house? Igloos it together!",
+        ],
+        Puns: [
+          "I wondered why the baseball was getting bigger. Then it hit me.",
+          "Time flies like an arrow. Fruit flies like a banana.",
+          "I used to be a banker, but I lost interest.",
+          "The baker quit because he wasn't making enough dough.",
+          "I told my suitcase there would be no vacation this year. Now I'm dealing with emotional baggage.",
+          "The math book looked sad because it had too many problems.",
+          "I got hit in the head with a can of soda. Luckily it was a soft drink.",
+        ],
+        "One-liners": [
+          "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+          "I'm reading a book about anti-gravity. It's impossible to put down.",
+          "Parallel lines have so much in common. It's a shame they'll never meet.",
+          "I haven't slept for ten days, because that would be too long.",
+          "I used to think I was indecisive, but now I'm not so sure.",
+          "The early bird might get the worm, but the second mouse gets the cheese.",
+        ],
+        "Knock-knock": [
+          "Knock knock. Who's there? Lettuce. Lettuce who? Lettuce in, it's cold out here!",
+          "Knock knock. Who's there? Boo. Boo who? Don't cry, it's just a joke!",
+          "Knock knock. Who's there? Cow says. Cow says who? No, cow says moo!",
+          "Knock knock. Who's there? Tank. Tank who? You're welcome!",
+          "Knock knock. Who's there? Atch. Atch who? Bless you!",
+          "Knock knock. Who's there? Olive. Olive who? Olive you!",
+        ],
+        Observational: [
+          "Why is it called 'after dark' when it's really after light?",
+          "The word 'bed' looks like a bed. The word 'shark' looks nothing like a shark. English is weird.",
+          "Adults are just kids who've been alive longer.",
+          "If you clean your room, you find stuff you forgot you had. If you don't clean, you can't find anything. There's no winning.",
+          "The snooze button is the most optimistic button on your phone.",
+          "Nothing makes you feel old like hearing a song you loved in a grocery store.",
+        ],
+        "Programming / tech": [
+          "Why do programmers prefer dark mode? Because light attracts bugs.",
+          "There are only 10 types of people: those who understand binary and those who don't.",
+          "A SQL query walks into a bar, walks up to two tables, and asks: 'Can I join you?'",
+          "Why did the developer go broke? Because he used up all his cache.",
+          "I would tell you a UDP joke, but you might not get it.",
+          "How many programmers does it take to change a light bulb? None — that's a hardware problem.",
+        ],
+        Science: [
+          "Never trust an atom. They make up everything.",
+          "Why can't you trust an atom? Because they literally make up everything!",
+          "What did the biologist wear to impress his date? Designer genes.",
+          "Why did the physics teacher break up with the biology teacher? There was no chemistry.",
+          "Einstein developed a theory about space. And it was about time too.",
+          "What is a computer's favorite snack? Microchips!",
+        ],
+        "Dark humor": [
+          "I have a joke about trick-or-treating, but I'll save it for Halloween.",
+          "My calendar is always full. It has a lot of dates.",
+          "I told my computer I needed a break. It said: 'No problem, I'll go to sleep mode.'",
+          "I asked my dog what's two minus two. He said nothing.",
+          "I'm great at multitasking. I can procrastinate and worry at the same time.",
+          "My bed and I are perfect for each other, but my alarm clock keeps trying to break us up.",
+        ],
+      };
+
+      const GENRES = Object.keys(JOKES);
+      let selectedGenre = GENRES[0];
+      let lastJoke = "";
+
+      const genreGrid = document.getElementById("genre-grid");
+      const generateBtn = document.getElementById("generate-btn");
+      const jokeCard = document.getElementById("joke-card");
+
+      GENRES.forEach((genre) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "genre-pill" + (genre === selectedGenre ? " active" : "");
+        btn.textContent = genre;
+        btn.addEventListener("click", () => {
+          selectedGenre = genre;
+          document.querySelectorAll(".genre-pill").forEach((p) => {
+            p.classList.toggle("active", p.textContent === genre);
+          });
+        });
+        genreGrid.appendChild(btn);
+      });
+
+      generateBtn.addEventListener("click", () => {
+        const list = JOKES[selectedGenre];
+        let joke;
+
+        if (list.length === 1) {
+          joke = list[0];
+        } else {
+          do {
+            joke = list[Math.floor(Math.random() * list.length)];
+          } while (joke === lastJoke && list.length > 1);
+        }
+
+        lastJoke = joke;
+        jokeCard.innerHTML = `<blockquote class="joke-text">${joke}</blockquote>`;
+      });
+    </script>
+  </body>
+</html>
