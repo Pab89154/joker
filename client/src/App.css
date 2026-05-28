@@ -218,6 +218,105 @@ body {
   font-weight: 600;
 }
 
+.joke-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 140px;
+  background: var(--surface);
+  border: 2px solid var(--purple);
+  color: var(--purple);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(131, 56, 236, 0.15);
+}
+
+.action-btn:hover {
+  background: var(--surface-hover);
+}
+
+.action-btn.speaking {
+  background: linear-gradient(135deg, var(--berry), var(--sun));
+  border-color: transparent;
+  color: white;
+}
+
+.translate-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lang-select {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--ocean);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+}
+
+.translate-btn {
+  flex: 1;
+  min-width: 140px;
+  background: linear-gradient(135deg, var(--purple), var(--ocean));
+  color: white;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(131, 56, 236, 0.25);
+}
+
+.translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.translation-card {
+  background: var(--surface);
+  border: 2px solid rgba(131, 56, 236, 0.3);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(26, 83, 92, 0.08);
+}
+
+.translation-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--berry);
+  margin-bottom: 0.5rem;
+}
+
+.translation-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.joke-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 @media (max-width: 480px) {
   .header h1 {
     font-size: 2.25rem;

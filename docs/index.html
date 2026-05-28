@@ -175,6 +175,105 @@
         color: var(--text-muted);
         font-weight: 600;
       }
+
+      .joke-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .action-btn {
+        flex: 1;
+        min-width: 140px;
+        background: var(--surface);
+        border: 2px solid var(--purple);
+        color: var(--purple);
+        padding: 0.65rem 1rem;
+        border-radius: var(--radius);
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(131, 56, 236, 0.15);
+      }
+
+      .action-btn:hover {
+        background: var(--surface-hover);
+      }
+
+      .action-btn.speaking {
+        background: linear-gradient(135deg, var(--berry), var(--sun));
+        border-color: transparent;
+        color: white;
+      }
+
+      .translate-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+
+      .lang-select {
+        flex: 1;
+        min-width: 140px;
+        padding: 0.65rem 0.9rem;
+        border: 2px solid var(--ocean);
+        border-radius: var(--radius);
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text);
+        background: var(--surface);
+      }
+
+      .translate-btn {
+        flex: 1;
+        min-width: 140px;
+        background: linear-gradient(135deg, var(--purple), var(--ocean));
+        color: white;
+        border: none;
+        padding: 0.65rem 1rem;
+        border-radius: var(--radius);
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(131, 56, 236, 0.25);
+      }
+
+      .translate-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .translation-card {
+        background: var(--surface);
+        border: 2px solid rgba(131, 56, 236, 0.3);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        box-shadow: 0 8px 24px rgba(26, 83, 92, 0.08);
+      }
+
+      .translation-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--berry);
+        margin-bottom: 0.5rem;
+      }
+
+      .translation-text {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: var(--text);
+      }
+
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -194,6 +293,30 @@
 
         <section class="joke-card" id="joke-card">
           <p class="placeholder">Choose a genre and hit generate!</p>
+        </section>
+
+        <section class="hidden" id="joke-tools">
+          <div class="joke-actions">
+            <button type="button" class="action-btn" id="read-btn">🔊 Read aloud</button>
+          </div>
+          <div class="translate-row">
+            <select class="lang-select" id="lang-select" aria-label="Choose a language">
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="zh">Chinese</option>
+            </select>
+            <button type="button" class="translate-btn" id="translate-btn">🌍 Translate joke</button>
+          </div>
+        </section>
+
+        <section class="translation-card hidden" id="translation-card">
+          <p class="translation-label" id="translation-label">Translation</p>
+          <p class="translation-text" id="translation-text"></p>
         </section>
       </main>
 
@@ -278,6 +401,39 @@
       const genreGrid = document.getElementById("genre-grid");
       const generateBtn = document.getElementById("generate-btn");
       const jokeCard = document.getElementById("joke-card");
+      const jokeTools = document.getElementById("joke-tools");
+      const readBtn = document.getElementById("read-btn");
+      const langSelect = document.getElementById("lang-select");
+      const translateBtn = document.getElementById("translate-btn");
+      const translationCard = document.getElementById("translation-card");
+      const translationLabel = document.getElementById("translation-label");
+      const translationText = document.getElementById("translation-text");
+
+      let currentJoke = "";
+      let currentTranslation = "";
+      let currentLang = "es";
+
+      const LANG_NAMES = {
+        es: "Spanish",
+        fr: "French",
+        de: "German",
+        it: "Italian",
+        pt: "Portuguese",
+        ja: "Japanese",
+        ko: "Korean",
+        zh: "Chinese",
+      };
+
+      const SPEECH_LANG = {
+        es: "es-ES",
+        fr: "fr-FR",
+        de: "de-DE",
+        it: "it-IT",
+        pt: "pt-PT",
+        ja: "ja-JP",
+        ko: "ko-KR",
+        zh: "zh-CN",
+      };
 
       GENRES.forEach((genre) => {
         const btn = document.createElement("button");
@@ -306,7 +462,78 @@
         }
 
         lastJoke = joke;
+        currentJoke = joke;
+        currentTranslation = "";
+        translationCard.classList.add("hidden");
         jokeCard.innerHTML = `<blockquote class="joke-text">${joke}</blockquote>`;
+        jokeTools.classList.remove("hidden");
+      });
+
+      function speakText(text, langCode) {
+        if (!text || !window.speechSynthesis) {
+          alert("Sorry, read-aloud is not supported in this browser.");
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = langCode || "en-US";
+        utterance.rate = 0.95;
+
+        readBtn.classList.add("speaking");
+        readBtn.textContent = "🔊 Reading...";
+
+        utterance.onend = () => {
+          readBtn.classList.remove("speaking");
+          readBtn.textContent = "🔊 Read aloud";
+        };
+
+        utterance.onerror = () => {
+          readBtn.classList.remove("speaking");
+          readBtn.textContent = "🔊 Read aloud";
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      readBtn.addEventListener("click", () => {
+        const text = currentTranslation || currentJoke;
+        const lang = currentTranslation ? SPEECH_LANG[currentLang] : "en-US";
+        speakText(text, lang);
+      });
+
+      translateBtn.addEventListener("click", async () => {
+        if (!currentJoke) return;
+
+        currentLang = langSelect.value;
+        translateBtn.disabled = true;
+        translateBtn.textContent = "Translating...";
+
+        try {
+          const url =
+            "https://api.mymemory.translated.net/get?q=" +
+            encodeURIComponent(currentJoke) +
+            "&langpair=en|" +
+            encodeURIComponent(currentLang);
+
+          const response = await fetch(url);
+          const data = await response.json();
+          const translated = data.responseData?.translatedText;
+
+          if (!translated) {
+            throw new Error("Could not translate the joke.");
+          }
+
+          currentTranslation = translated;
+          translationLabel.textContent = LANG_NAMES[currentLang] + " translation";
+          translationText.textContent = translated;
+          translationCard.classList.remove("hidden");
+        } catch (err) {
+          alert("Translation failed. Check your internet and try again.");
+        } finally {
+          translateBtn.disabled = false;
+          translateBtn.textContent = "🌍 Translate joke";
+        }
       });
     </script>
   </body>
