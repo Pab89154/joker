@@ -7,4 +7,5 @@ export const GENRES = [
   "Programming / tech",
   "Science",
   "Dark humor",
+  "Riddles",
 ];
