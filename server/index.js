@@ -4,7 +4,6 @@ import { pickJoke } from "./jokes.js";
 
 const app = express();
 const PORT = 3001;
-const lastJokes = new Map();
 
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
@@ -16,13 +15,12 @@ app.post("/api/joke", (req, res) => {
     return res.status(400).json({ error: "Genre is required." });
   }
 
-  const joke = pickJoke(genre, lastJokes.get(genre));
+  const joke = pickJoke(genre);
 
   if (!joke) {
     return res.status(404).json({ error: "No jokes found for that genre." });
   }
 
-  lastJokes.set(genre, joke);
   res.json({ joke });
 });
 

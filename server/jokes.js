@@ -74,11 +74,38 @@ export const JOKES = {
     "What has keys but can't open locks? A piano.",
     "What has a neck but no head? A bottle.",
     "What goes up but never comes down? Your age.",
-    "What has a face and two hands but no arms or legs? A clock.",
+    "What has to be broken before you can use it? An egg.",
+    "What has legs but doesn't walk? A table.",
+    "What can travel around the world while staying in a corner? A stamp.",
+    "What is full of holes but still holds water? A sponge.",
+    "What gets bigger the more you take away? A hole.",
+    "What has one eye but can't see? A needle.",
+    "What goes through cities and fields but never moves? A road.",
+    "What has words but never speaks? A book.",
+    "What runs but never walks? Water.",
+    "What has a thumb and four fingers but is not alive? A glove.",
+    "What comes down but never goes up? Rain.",
+    "I speak without a mouth and hear without ears. What am I? An echo.",
+    "The more of this there is, the less you see. What is it? Darkness.",
+    "What can fill a room but takes up no space? Light.",
+    "What has cities but no houses, forests but no trees? A map.",
+    "What belongs to you but other people use it more? Your name.",
+    "What kind of coat is always wet? A coat of paint.",
   ],
 };
 
-export function pickJoke(genre, lastJoke = "") {
+const decks = new Map();
+
+function shuffle(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+export function pickJoke(genre) {
   const list = JOKES[genre];
 
   if (!list || list.length === 0) {
@@ -89,10 +116,11 @@ export function pickJoke(genre, lastJoke = "") {
     return list[0];
   }
 
-  let joke;
-  do {
-    joke = list[Math.floor(Math.random() * list.length)];
-  } while (joke === lastJoke);
+  let deck = decks.get(genre);
+  if (!deck || deck.length === 0) {
+    deck = shuffle(list);
+    decks.set(genre, deck);
+  }
 
-  return joke;
+  return deck.pop();
 }
