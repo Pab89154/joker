@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Guess the Flag! — Can you name the country from its flag?" />
+    <title>Guess the Flag!</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #F8FAFC;
+        --blue: #2563EB;
+        --green: #22C55E;
+        --red: #EF4444;
+        --text: #1F2937;
+        --card: #FFFFFF;
+        --muted: #6B7280;
+        --radius: 16px;
+      }
+
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      .app {
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 1rem 0.75rem;
+        background: var(--bg);
+        overflow: hidden;
+      }
+
+      header {
+        width: calc(100% + 2rem);
+        margin: 0 -1rem 0.5rem;
+        flex-shrink: 0;
+        text-align: center;
+        padding: 0.85rem 1rem 1rem;
+        background: var(--blue);
+        color: #ffffff;
+        border-radius: 0 0 var(--radius) var(--radius);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        position: relative;
+      }
+
+      .lang-picker {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 20;
+      }
+
+      .lang-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        border-radius: 10px;
+        padding: 0.45rem 0.75rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        min-width: 130px;
+        justify-content: space-between;
+      }
+
+      .lang-toggle:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      .lang-chevron {
+        font-size: 0.75rem;
+        opacity: 0.9;
+      }
+
+      .lang-menu {
+        position: absolute;
+        top: calc(100% + 0.35rem);
+        right: 0;
+        min-width: 220px;
+        list-style: none;
+        background: #ffffff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0.25rem;
+        gap: 0.15rem;
+      }
+
+      .lang-menu.hidden {
+        display: none;
+      }
+
+      .lang-option {
+        display: block;
+        width: 100%;
+        border: none;
+        background: #ffffff;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-align: left;
+        padding: 0.5rem 0.65rem;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .lang-option:hover {
+        background: #F8FAFC;
+      }
+
+      .lang-option.active {
+        background: #ECFDF5;
+        color: #166534;
+        font-weight: 700;
+      }
+
+      html[dir="rtl"] .lang-picker {
+        right: auto;
+        left: 1rem;
+      }
+
+      html[dir="rtl"] .lang-menu {
+        right: auto;
+        left: 0;
+      }
+
+      html[dir="rtl"] .lang-option {
+        text-align: right;
+      }
+
+      .logo {
+        font-size: 3.5rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 6vw, 2.75rem);
+        color: #ffffff;
+      }
+
+      .tagline {
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 0.35rem;
+        font-size: 1.05rem;
+      }
+
+      .panel {
+        width: min(520px, 100%);
+        background: var(--card);
+        border: 1px solid #E5E7EB;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: 0 4px 16px rgba(31, 41, 55, 0.08);
+      }
+
+      .panel:has(#startScreen.active) {
+        display: block;
+        margin-top: 1.25rem;
+        padding: 1.75rem 2rem 2rem;
+      }
+
+      .screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+      }
+
+      .screen.active {
+        display: flex;
+      }
+
+      #startScreen {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+
+      #startScreen .question,
+      #startScreen .result-message {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .level-box {
+        width: 100%;
+        margin-top: 0.25rem;
+        padding: 1.25rem 1.5rem 1.5rem;
+        border: 1px solid #E5E7EB;
+        border-radius: var(--radius);
+        background: #FAFBFC;
+      }
+
+      #startScreen .level-grid {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        gap: 0.65rem;
+      }
+
+      #startScreen .level-btn {
+        text-align: center;
+        width: 100%;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 0.85rem 1.75rem;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: var(--blue);
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      }
+
+      .btn:hover {
+        transform: scale(1.05);
+        background: #1d4ed8;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-secondary {
+        background: var(--card);
+        color: var(--blue);
+        border: 2px solid var(--blue);
+        box-shadow: none;
+      }
+
+      .btn-secondary:hover {
+        background: #EFF6FF;
+      }
+
+      .level-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        width: 100%;
+      }
+
+      .level-btn {
+        background: var(--card);
+        border: 2px solid #E5E7EB;
+        border-radius: var(--radius);
+        padding: 1rem;
+        text-align: left;
+        color: var(--text);
+        font-family: inherit;
+        cursor: pointer;
+        transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      }
+
+      .level-btn:hover {
+        border-color: var(--blue);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .level-btn strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .level-btn span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .score-bar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .score-bar .score {
+        color: var(--green);
+      }
+
+      .flag-box {
+        width: 100%;
+        background: var(--card);
+        border: 2px solid #E5E7EB;
+        border-radius: var(--radius);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+      }
+
+      .flag-box img {
+        max-width: 100%;
+        max-height: 140px;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .question {
+        font-size: 1.15rem;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .answers {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+        width: 100%;
+      }
+
+      .answer-btn {
+        background: var(--card);
+        border: 2px solid #E5E7EB;
+        border-radius: var(--radius);
+        padding: 0.85rem 0.65rem;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+
+      .answer-btn:hover:not(:disabled) {
+        border-color: var(--blue);
+        background: #EFF6FF;
+      }
+
+      .answer-btn:disabled {
+        cursor: default;
+      }
+
+      .answer-btn.correct {
+        border-color: var(--green);
+        background: rgba(34, 197, 94, 0.12);
+        color: var(--text);
+      }
+
+      .answer-btn.wrong {
+        border-color: var(--red);
+        background: rgba(239, 68, 68, 0.12);
+        color: var(--text);
+      }
+
+      .feedback {
+        min-height: 1.5rem;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .feedback.good {
+        color: var(--green);
+      }
+
+      .feedback.bad {
+        color: var(--red);
+      }
+
+      .progress {
+        width: 100%;
+        height: 10px;
+        background: #E5E7EB;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--blue);
+        border-radius: 999px;
+        transition: width 0.3s ease;
+      }
+
+      .result-score {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--blue);
+        line-height: 1;
+      }
+
+      .result-message {
+        text-align: center;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 420px) {
+        .answers {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="lang-picker" id="langPicker">
+          <button type="button" class="lang-toggle" id="langToggle" aria-haspopup="listbox" aria-expanded="false">
+            <span id="langToggleLabel">English</span>
+            <span class="lang-chevron" aria-hidden="true">▾</span>
+          </button>
+          <ul class="lang-menu hidden" id="langMenu" role="listbox"></ul>
+        </div>
+        <div class="logo" aria-hidden="true">🏳️</div>
+        <h1 id="titleText">Guess the Flag!</h1>
+        <p class="tagline" id="taglineText">Look at the flag. Pick the right country!</p>
+      </header>
+
+      <div class="panel">
+        <!-- Start screen -->
+        <div class="screen active" id="startScreen">
+          <p class="question" id="startQuestion">How well do you know world flags?</p>
+          <p class="result-message" id="startHint">Each round has 10 questions. Good luck!</p>
+          <div class="level-box">
+            <div class="level-grid">
+              <button type="button" class="level-btn" data-level="easy">
+                <strong id="easyLabel">⭐ Easy</strong>
+                <span id="easyDesc">20 famous countries — great for beginners!</span>
+              </button>
+              <button type="button" class="level-btn" data-level="medium">
+                <strong id="mediumLabel">⭐⭐ Medium</strong>
+                <span id="mediumDesc">40 countries — a real challenge!</span>
+              </button>
+              <button type="button" class="level-btn" data-level="hard">
+                <strong id="hardLabel">⭐⭐⭐ Hard</strong>
+                <span id="hardDesc">60 countries — for flag experts!</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game screen -->
+        <div class="screen" id="gameScreen">
+          <div class="score-bar">
+            <span id="roundLabel">Question 1 / 10</span>
+            <span><span id="scoreLabel">Score</span>: <span class="score" id="score">0</span></span>
+          </div>
+          <div class="progress" aria-hidden="true">
+            <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+          </div>
+          <div class="flag-box">
+            <img id="flagImg" src="" alt="Country flag" />
+          </div>
+          <p class="question" id="whichCountryText">Which country is this?</p>
+          <div class="answers" id="answers"></div>
+          <p class="feedback" id="feedback"></p>
+          <button type="button" class="btn hidden" id="nextBtn">Next →</button>
+        </div>
+
+        <!-- Results screen -->
+        <div class="screen" id="resultScreen">
+          <p class="question" id="roundCompleteText">Round complete!</p>
+          <p class="result-score" id="finalScore">0 / 10</p>
+          <p class="result-message" id="resultMessage"></p>
+          <button type="button" class="btn" id="playAgainBtn">Play Again</button>
+          <button type="button" class="btn btn-secondary" id="changeLevelBtn">Change Level</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="i18n.js"></script>
+    <script>
+      var lang = localStorage.getItem("guessTheFlagLang") || "en";
+      if (LANGS.indexOf(lang) === -1) lang = "en";
+
+      var COUNTRIES = {
+        easy: ["us","ca","mx","br","gb","fr","de","it","es","jp","cn","in","au","eg","za","ar","ru","kr","ie","se"],
+        medium: ["us","ca","mx","br","gb","fr","de","it","es","jp","cn","in","au","eg","za","ar","ru","kr","ie","se","no","fi","nl","be","ch","at","pl","gr","tr","pt","th","vn","id","ph","nz","cl","co","pe","ng","ke"],
+        hard: ["us","ca","mx","br","gb","fr","de","it","es","jp","cn","in","au","eg","za","ar","ru","kr","ie","se","no","fi","nl","be","ch","at","pl","gr","tr","pt","th","vn","id","ph","nz","cl","co","pe","ng","ke","ma","sa","ae","il","ua","cz","hu","ro","hr","is","dk","pk","bd","my","sg","cu","jm","cr","et","gh"],
+      };
+
+      var ROUND_SIZE = 10;
+      var level = "easy";
+      var score = 0;
+      var questionIndex = 0;
+      var questions = [];
+      var answered = false;
+      var lastFeedback = null;
+
+      var startScreen = document.getElementById("startScreen");
+      var gameScreen = document.getElementById("gameScreen");
+      var resultScreen = document.getElementById("resultScreen");
+      var flagImg = document.getElementById("flagImg");
+      var answersEl = document.getElementById("answers");
+      var feedbackEl = document.getElementById("feedback");
+      var nextBtn = document.getElementById("nextBtn");
+      var scoreEl = document.getElementById("score");
+      var roundLabel = document.getElementById("roundLabel");
+      var progressFill = document.getElementById("progressFill");
+      var langToggle = document.getElementById("langToggle");
+      var langToggleLabel = document.getElementById("langToggleLabel");
+      var langMenu = document.getElementById("langMenu");
+      var langPicker = document.getElementById("langPicker");
+
+      function t(key) {
+        return I18N[lang][key];
+      }
+
+      function countryName(code) {
+        return COUNTRY_NAMES[code][lang];
+      }
+
+      function langLabel(code) {
+        var match = LANG_OPTIONS.filter(function (o) { return o.code === code; })[0];
+        return match ? match.label : code;
+      }
+
+      function questionLabel(num) {
+        if (lang === "zh") return "第 " + num + " / " + ROUND_SIZE + " 题";
+        return t("question") + " " + num + " / " + ROUND_SIZE;
+      }
+
+      function buildLangMenu() {
+        langMenu.innerHTML = "";
+        LANG_OPTIONS.forEach(function (opt) {
+          var li = document.createElement("li");
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "lang-option" + (opt.code === lang ? " active" : "");
+          btn.setAttribute("role", "option");
+          btn.setAttribute("data-lang", opt.code);
+          btn.setAttribute("aria-selected", opt.code === lang ? "true" : "false");
+          btn.textContent = opt.label;
+          btn.onclick = function () {
+            setLanguage(opt.code);
+            closeLangMenu();
+          };
+          li.appendChild(btn);
+          langMenu.appendChild(li);
+        });
+      }
+
+      function openLangMenu() {
+        langMenu.classList.remove("hidden");
+        langToggle.setAttribute("aria-expanded", "true");
+      }
+
+      function closeLangMenu() {
+        langMenu.classList.add("hidden");
+        langToggle.setAttribute("aria-expanded", "false");
+      }
+
+      function setLanguage(code) {
+        lang = code;
+        localStorage.setItem("guessTheFlagLang", lang);
+        applyLanguage();
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+        document.title = t("title");
+        langToggleLabel.textContent = langLabel(lang);
+        buildLangMenu();
+
+        document.getElementById("titleText").textContent = t("title");
+        document.getElementById("taglineText").textContent = t("tagline");
+        document.getElementById("startQuestion").textContent = t("startQuestion");
+        document.getElementById("startHint").textContent = t("startHint");
+        document.getElementById("easyLabel").textContent = t("easy");
+        document.getElementById("easyDesc").textContent = t("easyDesc");
+        document.getElementById("mediumLabel").textContent = t("medium");
+        document.getElementById("mediumDesc").textContent = t("mediumDesc");
+        document.getElementById("hardLabel").textContent = t("hard");
+        document.getElementById("hardDesc").textContent = t("hardDesc");
+        document.getElementById("scoreLabel").textContent = t("score");
+        document.getElementById("whichCountryText").textContent = t("whichCountry");
+        document.getElementById("roundCompleteText").textContent = t("roundComplete");
+        document.getElementById("playAgainBtn").textContent = t("playAgain");
+        document.getElementById("changeLevelBtn").textContent = t("changeLevel");
+        nextBtn.textContent = t("next");
+
+        if (gameScreen.classList.contains("active") && questions.length) {
+          roundLabel.textContent = questionLabel(questionIndex + 1);
+          flagImg.alt = t("flagAlt");
+          refreshAnswerLabels();
+          if (lastFeedback) {
+            feedbackEl.textContent = lastFeedback.text;
+            feedbackEl.className = lastFeedback.className;
+          }
+        }
+
+        if (resultScreen.classList.contains("active")) {
+          updateResultMessage();
+        }
+      }
+
+      function refreshAnswerLabels() {
+        answersEl.querySelectorAll(".answer-btn").forEach(function (btn) {
+          btn.textContent = countryName(btn.getAttribute("data-code"));
+        });
+      }
+
+      langToggle.onclick = function (e) {
+        e.stopPropagation();
+        if (langMenu.classList.contains("hidden")) openLangMenu();
+        else closeLangMenu();
+      };
+
+      document.addEventListener("click", function (e) {
+        if (!langPicker.contains(e.target)) closeLangMenu();
+      });
+
+      function showScreen(screen) {
+        startScreen.classList.remove("active");
+        gameScreen.classList.remove("active");
+        resultScreen.classList.remove("active");
+        screen.classList.add("active");
+      }
+
+      function shuffle(list) {
+        var copy = list.slice();
+        for (var i = copy.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = temp;
+        }
+        return copy;
+      }
+
+      function pickRandomOthers(pool, correctCode, count) {
+        var others = pool.filter(function (code) {
+          return code !== correctCode;
+        });
+        return shuffle(others).slice(0, count);
+      }
+
+      function startGame(chosenLevel) {
+        level = chosenLevel;
+        score = 0;
+        questionIndex = 0;
+        questions = shuffle(COUNTRIES[level]).slice(0, ROUND_SIZE);
+        scoreEl.textContent = "0";
+        lastFeedback = null;
+        showScreen(gameScreen);
+        showQuestion();
+      }
+
+      function showQuestion() {
+        answered = false;
+        lastFeedback = null;
+        nextBtn.classList.add("hidden");
+        feedbackEl.textContent = "";
+        feedbackEl.className = "feedback";
+
+        var currentCode = questions[questionIndex];
+        roundLabel.textContent = questionLabel(questionIndex + 1);
+        progressFill.style.width =
+          ((questionIndex + 1) / ROUND_SIZE) * 100 + "%";
+
+        flagImg.src = "https://flagcdn.com/w320/" + currentCode + ".png";
+        flagImg.alt = t("flagAlt");
+
+        var wrongChoices = pickRandomOthers(COUNTRIES[level], currentCode, 3);
+        var choices = shuffle(wrongChoices.concat([currentCode]));
+
+        answersEl.innerHTML = "";
+        choices.forEach(function (code) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "answer-btn";
+          btn.setAttribute("data-code", code);
+          btn.textContent = countryName(code);
+          btn.onclick = function () {
+            pickAnswer(btn, code, currentCode);
+          };
+          answersEl.appendChild(btn);
+        });
+      }
+
+      function pickAnswer(btn, choiceCode, correctCode) {
+        if (answered) return;
+        answered = true;
+
+        var buttons = answersEl.querySelectorAll(".answer-btn");
+        buttons.forEach(function (b) {
+          b.disabled = true;
+        });
+
+        if (choiceCode === correctCode) {
+          score++;
+          scoreEl.textContent = String(score);
+          btn.classList.add("correct");
+          var goodMsg = t("goodMessages")[Math.floor(Math.random() * t("goodMessages").length)];
+          feedbackEl.textContent = goodMsg;
+          feedbackEl.className = "feedback good";
+          lastFeedback = { text: goodMsg, className: "feedback good" };
+        } else {
+          btn.classList.add("wrong");
+          buttons.forEach(function (b) {
+            if (b.getAttribute("data-code") === correctCode) b.classList.add("correct");
+          });
+          var wrongMsg = t("wrongAnswer").replace("{name}", countryName(correctCode));
+          feedbackEl.textContent = wrongMsg;
+          feedbackEl.className = "feedback bad";
+          lastFeedback = { text: wrongMsg, className: "feedback bad" };
+        }
+
+        nextBtn.classList.remove("hidden");
+      }
+
+      function updateResultMessage() {
+        var msg;
+        if (score === ROUND_SIZE) {
+          msg = t("perfect");
+        } else if (score >= 8) {
+          msg = t("amazing");
+        } else if (score >= 5) {
+          msg = t("okMessages")[Math.floor(Math.random() * t("okMessages").length)];
+        } else {
+          msg = t("keepPracticing");
+        }
+        document.getElementById("resultMessage").textContent = msg;
+      }
+
+      function finishRound() {
+        document.getElementById("finalScore").textContent =
+          score + " / " + ROUND_SIZE;
+        updateResultMessage();
+        showScreen(resultScreen);
+      }
+
+      document.querySelectorAll(".level-btn").forEach(function (btn) {
+        btn.onclick = function () {
+          startGame(btn.getAttribute("data-level"));
+        };
+      });
+
+      nextBtn.onclick = function () {
+        questionIndex++;
+        if (questionIndex >= ROUND_SIZE) {
+          finishRound();
+        } else {
+          showQuestion();
+        }
+      };
+
+      document.getElementById("playAgainBtn").onclick = function () {
+        startGame(level);
+      };
+
+      document.getElementById("changeLevelBtn").onclick = function () {
+        showScreen(startScreen);
+      };
+
+      applyLanguage();
+    </script>
+  </body>
+</html>
