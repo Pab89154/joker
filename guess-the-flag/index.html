@@ -43,14 +43,55 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0 1rem 0.75rem;
+        padding: 0;
         background: var(--bg);
         overflow: hidden;
       }
 
+      .main-area {
+        flex: 1;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 1rem 0.75rem;
+        min-height: 0;
+        background: #1a2744;
+      }
+
+      .flags-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .flags-bg-grid {
+        display: grid;
+        grid-template-columns: repeat(14, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+        width: 100%;
+        height: 108%;
+        gap: 3px;
+        padding: 0 3px 3px;
+        background: #1a2744;
+        transform: translateY(-7%);
+      }
+
+      .flags-bg-grid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 2px;
+      }
+
       header {
         width: calc(100% + 2rem);
-        margin: 0 -1rem 0.5rem;
+        margin: 0 -1rem 0;
         flex-shrink: 0;
         text-align: center;
         padding: 0.85rem 1rem 1rem;
@@ -66,6 +107,266 @@
         top: 1rem;
         right: 1rem;
         z-index: 20;
+      }
+
+      .feedback-btn {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 20;
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        border-radius: 10px;
+        padding: 0.45rem 0.75rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+      }
+
+      .feedback-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      html[dir="rtl"] .feedback-btn {
+        left: auto;
+        right: 1rem;
+      }
+
+      html[dir="rtl"] .lang-picker {
+        right: auto;
+        left: 1rem;
+      }
+
+      .feedback-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(15, 23, 42, 0.55);
+      }
+
+      .feedback-modal.hidden {
+        display: none;
+      }
+
+      .feedback-card {
+        width: min(420px, 100%);
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: 0 16px 40px rgba(31, 41, 55, 0.2);
+      }
+
+      .feedback-card h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.35rem;
+        color: var(--text);
+      }
+
+      .feedback-card p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+
+      .feedback-card textarea {
+        width: 100%;
+        min-height: 120px;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 0.85rem;
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--text);
+        resize: vertical;
+        margin-bottom: 1rem;
+      }
+
+      .feedback-card textarea:focus {
+        outline: none;
+        border-color: var(--blue);
+      }
+
+      .feedback-actions {
+        display: flex;
+        gap: 0.65rem;
+        justify-content: flex-end;
+      }
+
+      .admin-footer {
+        flex-shrink: 0;
+        width: calc(100% + 2rem);
+        margin: 0 -1rem;
+        text-align: center;
+        padding: 0.65rem 1rem 0.85rem;
+        background: #F5F0E8;
+        position: relative;
+        z-index: 2;
+      }
+
+      .admin-link {
+        border: none;
+        background: none;
+        color: #4A7C59;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .admin-link:hover {
+        color: #3d6649;
+      }
+
+      .admin-password-input {
+        width: 100%;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 0.85rem;
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+      }
+
+      .admin-password-input:focus {
+        outline: none;
+        border-color: var(--blue);
+      }
+
+      .admin-error {
+        color: var(--red);
+        font-size: 0.9rem;
+        font-weight: 600;
+        min-height: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .admin-list {
+        list-style: none;
+        max-height: 320px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+      }
+
+      .admin-list-item {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid #E5E7EB;
+        text-align: left;
+      }
+
+      .admin-list-item.unread {
+        background: #EFF6FF;
+      }
+
+      .admin-list-item.read {
+        background: #FAFAFA;
+      }
+
+      .admin-list-item:last-child {
+        border-bottom: none;
+      }
+
+      .admin-list-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .admin-list-date {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .admin-status-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .admin-status-badge.unread {
+        background: #DBEAFE;
+        color: #1D4ED8;
+      }
+
+      .admin-status-badge.read {
+        background: #E5E7EB;
+        color: #6B7280;
+      }
+
+      .admin-list-text {
+        font-size: 0.95rem;
+        color: var(--text);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .admin-item-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-top: 0.65rem;
+      }
+
+      .admin-action-btn {
+        border: 1px solid #E5E7EB;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 0.35rem 0.6rem;
+        font-size: 0.78rem;
+        font-family: inherit;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .admin-action-btn:hover {
+        border-color: var(--blue);
+        background: #EFF6FF;
+      }
+
+      .admin-action-btn.danger:hover {
+        border-color: var(--red);
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--red);
+      }
+
+      .admin-action-btn:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+
+      .admin-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 0.75rem;
+      }
+
+      .admin-panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: flex-end;
+      }
+
+      .admin-empty {
+        padding: 1.25rem;
+        text-align: center;
+        color: var(--muted);
       }
 
       .lang-toggle {
@@ -141,11 +442,6 @@
         font-weight: 700;
       }
 
-      html[dir="rtl"] .lang-picker {
-        right: auto;
-        left: 1rem;
-      }
-
       html[dir="rtl"] .lang-menu {
         right: auto;
         left: 0;
@@ -173,6 +469,8 @@
       }
 
       .panel {
+        position: relative;
+        z-index: 1;
         width: min(520px, 100%);
         background: var(--card);
         border: 1px solid #E5E7EB;
@@ -438,6 +736,7 @@
   <body>
     <div class="app">
       <header>
+        <button type="button" class="feedback-btn" id="feedbackOpenBtn">💬 Feedback</button>
         <div class="lang-picker" id="langPicker">
           <button type="button" class="lang-toggle" id="langToggle" aria-haspopup="listbox" aria-expanded="false">
             <span id="langToggleLabel">English</span>
@@ -450,6 +749,8 @@
         <p class="tagline" id="taglineText">Look at the flag. Pick the right country!</p>
       </header>
 
+      <div class="main-area">
+      <div class="flags-bg" id="flagsBg" aria-hidden="true"></div>
       <div class="panel">
         <!-- Start screen -->
         <div class="screen active" id="startScreen">
@@ -498,6 +799,50 @@
           <p class="result-message" id="resultMessage"></p>
           <button type="button" class="btn" id="playAgainBtn">Play Again</button>
           <button type="button" class="btn btn-secondary" id="changeLevelBtn">Change Level</button>
+        </div>
+      </div>
+      </div>
+
+      <footer class="admin-footer">
+        <button type="button" class="admin-link" id="adminOpenBtn">Admin</button>
+      </footer>
+    </div>
+
+    <div class="feedback-modal hidden" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+      <div class="feedback-card">
+        <h2 id="feedbackTitle">Send Feedback</h2>
+        <p id="feedbackHint">Tell us what you think — ideas, bugs, or anything!</p>
+        <textarea id="feedbackText" placeholder="Type your message here..."></textarea>
+        <div class="feedback-actions">
+          <button type="button" class="btn btn-secondary" id="feedbackCancelBtn">Cancel</button>
+          <button type="button" class="btn" id="feedbackSendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="feedback-modal hidden" id="adminPasswordModal" role="dialog" aria-modal="true" aria-labelledby="adminPasswordTitle">
+      <div class="feedback-card">
+        <h2 id="adminPasswordTitle">Admin</h2>
+        <p id="adminPasswordHint">Enter the password to view feedback.</p>
+        <input type="password" class="admin-password-input" id="adminPasswordInput" placeholder="Password" />
+        <p class="admin-error" id="adminPasswordError"></p>
+        <div class="feedback-actions">
+          <button type="button" class="btn btn-secondary" id="adminPasswordCancelBtn">Cancel</button>
+          <button type="button" class="btn" id="adminPasswordSubmitBtn">Enter</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="feedback-modal hidden" id="adminPanelModal" role="dialog" aria-modal="true" aria-labelledby="adminPanelTitle">
+      <div class="feedback-card">
+        <h2 id="adminPanelTitle">Feedback</h2>
+        <p id="adminPanelHint">Messages from this browser:</p>
+        <div class="admin-toolbar">
+          <button type="button" class="btn btn-secondary" id="adminSaveBtn">Save</button>
+        </div>
+        <ul class="admin-list" id="adminFeedbackList"></ul>
+        <div class="admin-panel-actions">
+          <button type="button" class="btn" id="adminCloseBtn">Close</button>
         </div>
       </div>
     </div>
@@ -613,6 +958,12 @@
         document.getElementById("playAgainBtn").textContent = t("playAgain");
         document.getElementById("changeLevelBtn").textContent = t("changeLevel");
         nextBtn.textContent = t("next");
+        document.getElementById("feedbackOpenBtn").textContent = t("feedbackBtn");
+        document.getElementById("feedbackTitle").textContent = t("feedbackTitle");
+        document.getElementById("feedbackHint").textContent = t("feedbackHint");
+        document.getElementById("feedbackText").placeholder = t("feedbackPlaceholder");
+        document.getElementById("feedbackSendBtn").textContent = t("feedbackSend");
+        document.getElementById("feedbackCancelBtn").textContent = t("feedbackCancel");
 
         if (gameScreen.classList.contains("active") && questions.length) {
           roundLabel.textContent = questionLabel(questionIndex + 1);
@@ -788,7 +1139,388 @@
         showScreen(startScreen);
       };
 
+      var feedbackModal = document.getElementById("feedbackModal");
+      var feedbackText = document.getElementById("feedbackText");
+
+      function openFeedbackModal() {
+        feedbackModal.classList.remove("hidden");
+        feedbackText.focus();
+      }
+
+      function closeFeedbackModal() {
+        feedbackModal.classList.add("hidden");
+      }
+
+      function sendFeedback() {
+        var message = feedbackText.value.trim();
+        if (!message) {
+          feedbackText.focus();
+          return;
+        }
+        saveFeedback(message);
+        feedbackText.value = "";
+        closeFeedbackModal();
+        alert(t("feedbackThanks"));
+      }
+
+      var FEEDBACK_STORAGE = "guessTheFlagFeedbackList";
+      var ADMIN_PASSWORD = "WorldFlags26";
+
+      function makeFeedbackId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      }
+
+      function normalizeFeedbackItem(item) {
+        return {
+          id: item.id || makeFeedbackId(),
+          text: item.text || "",
+          date: item.date || new Date().toISOString(),
+          lang: item.lang || "en",
+          read: item.read === true,
+        };
+      }
+
+      function saveFeedbackList(list) {
+        localStorage.setItem(FEEDBACK_STORAGE, JSON.stringify(list));
+      }
+
+      function saveFeedback(message) {
+        var list = loadFeedbackList();
+        list.unshift({
+          id: makeFeedbackId(),
+          text: message,
+          date: new Date().toISOString(),
+          lang: lang,
+          read: false,
+        });
+        saveFeedbackList(list);
+      }
+
+      function loadFeedbackList() {
+        try {
+          var raw = JSON.parse(localStorage.getItem(FEEDBACK_STORAGE)) || [];
+          return raw.map(normalizeFeedbackItem);
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function updateFeedbackItem(id, changes) {
+        var list = loadFeedbackList().map(function (item) {
+          if (item.id !== id) return item;
+          return normalizeFeedbackItem(Object.assign({}, item, changes));
+        });
+        saveFeedbackList(list);
+        renderAdminFeedbackList();
+      }
+
+      function deleteFeedbackItem(id) {
+        if (!confirm("Delete this feedback message?")) return;
+        saveFeedbackList(loadFeedbackList().filter(function (item) {
+          return item.id !== id;
+        }));
+        renderAdminFeedbackList();
+      }
+
+      function exportFeedbackFile() {
+        var list = loadFeedbackList();
+        if (!list.length) {
+          alert("No feedback to save yet.");
+          return;
+        }
+        var lines = list.map(function (item) {
+          return (
+            "---\nDate: " +
+            formatFeedbackDate(item.date) +
+            "\nStatus: " +
+            (item.read ? "Read" : "Unread") +
+            "\nLanguage: " +
+            (item.lang || "en").toUpperCase() +
+            "\n\n" +
+            item.text +
+            "\n"
+          );
+        });
+        var blob = new Blob([lines.join("\n")], { type: "text/plain" });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download =
+          "guess-the-flag-feedback-" + new Date().toISOString().slice(0, 10) + ".txt";
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function formatFeedbackDate(iso) {
+        try {
+          return new Date(iso).toLocaleString();
+        } catch (e) {
+          return iso;
+        }
+      }
+
+      function createAdminActionButton(label, action, id, extraClass) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "admin-action-btn" + (extraClass ? " " + extraClass : "");
+        btn.textContent = label;
+        btn.setAttribute("data-action", action);
+        btn.setAttribute("data-id", id);
+        return btn;
+      }
+
+      function renderAdminFeedbackList() {
+        var listEl = document.getElementById("adminFeedbackList");
+        var hintEl = document.getElementById("adminPanelHint");
+        var items = loadFeedbackList();
+        var unreadCount = items.filter(function (item) {
+          return !item.read;
+        }).length;
+
+        hintEl.textContent =
+          items.length +
+          " message" +
+          (items.length === 1 ? "" : "s") +
+          " · " +
+          unreadCount +
+          " unread";
+
+        listEl.innerHTML = "";
+        if (!items.length) {
+          var empty = document.createElement("li");
+          empty.className = "admin-empty";
+          empty.textContent = "No feedback yet.";
+          listEl.appendChild(empty);
+          return;
+        }
+
+        items.forEach(function (item) {
+          var li = document.createElement("li");
+          li.className = "admin-list-item " + (item.read ? "read" : "unread");
+
+          var meta = document.createElement("div");
+          meta.className = "admin-list-meta";
+
+          var date = document.createElement("span");
+          date.className = "admin-list-date";
+          date.textContent =
+            formatFeedbackDate(item.date) +
+            (item.lang ? " · " + item.lang.toUpperCase() : "");
+
+          var badge = document.createElement("span");
+          badge.className =
+            "admin-status-badge " + (item.read ? "read" : "unread");
+          badge.textContent = item.read ? "Read" : "Unread";
+
+          var text = document.createElement("p");
+          text.className = "admin-list-text";
+          text.textContent = item.text;
+
+          var actions = document.createElement("div");
+          actions.className = "admin-item-actions";
+
+          var readBtn = createAdminActionButton("Mark as read", "read", item.id);
+          var unreadBtn = createAdminActionButton("Mark as unread", "unread", item.id);
+          var deleteBtn = createAdminActionButton("Delete", "delete", item.id, "danger");
+
+          readBtn.disabled = item.read;
+          unreadBtn.disabled = !item.read;
+
+          actions.appendChild(readBtn);
+          actions.appendChild(unreadBtn);
+          actions.appendChild(deleteBtn);
+
+          meta.appendChild(date);
+          meta.appendChild(badge);
+          li.appendChild(meta);
+          li.appendChild(text);
+          li.appendChild(actions);
+          listEl.appendChild(li);
+        });
+      }
+
+      function handleAdminListAction(e) {
+        var btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        var id = btn.getAttribute("data-id");
+        var action = btn.getAttribute("data-action");
+        if (action === "read") updateFeedbackItem(id, { read: true });
+        if (action === "unread") updateFeedbackItem(id, { read: false });
+        if (action === "delete") deleteFeedbackItem(id);
+      }
+
+      var adminPasswordModal = document.getElementById("adminPasswordModal");
+      var adminPanelModal = document.getElementById("adminPanelModal");
+      var adminPasswordInput = document.getElementById("adminPasswordInput");
+      var adminPasswordError = document.getElementById("adminPasswordError");
+
+      function openAdminPasswordModal() {
+        adminPasswordError.textContent = "";
+        adminPasswordInput.value = "";
+        adminPasswordModal.classList.remove("hidden");
+        adminPasswordInput.focus();
+      }
+
+      function closeAdminPasswordModal() {
+        adminPasswordModal.classList.add("hidden");
+        adminPasswordInput.value = "";
+        adminPasswordError.textContent = "";
+      }
+
+      function openAdminPanel() {
+        renderAdminFeedbackList();
+        adminPanelModal.classList.remove("hidden");
+      }
+
+      function closeAdminPanel() {
+        adminPanelModal.classList.add("hidden");
+      }
+
+      function tryAdminLogin() {
+        if (adminPasswordInput.value === ADMIN_PASSWORD) {
+          closeAdminPasswordModal();
+          openAdminPanel();
+        } else {
+          adminPasswordError.textContent = "Wrong password. Try again.";
+          adminPasswordInput.select();
+        }
+      }
+
+      document.getElementById("adminOpenBtn").onclick = openAdminPasswordModal;
+      document.getElementById("adminPasswordCancelBtn").onclick = closeAdminPasswordModal;
+      document.getElementById("adminPasswordSubmitBtn").onclick = tryAdminLogin;
+      document.getElementById("adminCloseBtn").onclick = closeAdminPanel;
+      document.getElementById("adminSaveBtn").onclick = exportFeedbackFile;
+      document.getElementById("adminFeedbackList").onclick = handleAdminListAction;
+
+      adminPasswordInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") tryAdminLogin();
+      });
+
+      adminPasswordModal.onclick = function (e) {
+        if (e.target === adminPasswordModal) closeAdminPasswordModal();
+      };
+
+      adminPanelModal.onclick = function (e) {
+        if (e.target === adminPanelModal) closeAdminPanel();
+      };
+
+      document.getElementById("feedbackOpenBtn").onclick = openFeedbackModal;
+      document.getElementById("feedbackCancelBtn").onclick = closeFeedbackModal;
+      document.getElementById("feedbackSendBtn").onclick = sendFeedback;
+
+      feedbackModal.onclick = function (e) {
+        if (e.target === feedbackModal) closeFeedbackModal();
+      };
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
+        if (!feedbackModal.classList.contains("hidden")) closeFeedbackModal();
+        if (!adminPasswordModal.classList.contains("hidden")) closeAdminPasswordModal();
+        if (!adminPanelModal.classList.contains("hidden")) closeAdminPanel();
+      });
+
+      var BG_FLAG_CODES = [
+        "us","gb","fr","de","it","es","jp","cn","in","br","ca","au","mx","kr","ru","za",
+        "ar","eg","ng","ke","se","no","fi","nl","be","ch","at","pl","ie","pt","gr","tr",
+        "th","vn","id","ph","my","sg","nz","cl","co","pe","sa","ae","il","ua","cz","hu",
+        "ro","hr","is","dk","pk","bd","ma","cu","jm","cr","et","gh","tw","hk","sk","si",
+        "bg","lt","lv","ee","lu","mt","cy","by","md","ge","am","az","kz","uz","qa","kw",
+        "om","ye","iq","ir","af","np","lk","mm","kh","la","mn","bo","py","uy","ve","ec",
+        "gt","hn","sv","ni","pa","do","ht","bb","tt","bs","jm","sn","ci","cm","tz","ug",
+        "rw","zm","zw","bw","na","mz","ao","cd","sd","ly","tn","dz","mr","ml","bf","ne",
+        "td","cf","cg","ga","gq","st","cv","gm","gw","sl","lr","tg","bj","mw","mg","mu",
+        "sc","km","dj","so","er","ss","ye","jo","lb","sy","ps","bh","bt","mv","tl","ws",
+        "fj","pg","sb","vu","nr","pw","fm","mh","ki","tv","to","ws","as","gu","mp","pr",
+      ];
+
+      var FEATURED_FLAGS = ["us", "gb", "es"];
+
+      function pickSpreadPositions(count, total, cols, minDist) {
+        var positions = [];
+        var tries = 0;
+        while (positions.length < count && tries < 800) {
+          tries++;
+          var pos = Math.floor(Math.random() * total);
+          var row = Math.floor(pos / cols);
+          var col = pos % cols;
+          var farEnough = true;
+          for (var i = 0; i < positions.length; i++) {
+            var otherRow = Math.floor(positions[i] / cols);
+            var otherCol = positions[i] % cols;
+            if (
+              Math.max(Math.abs(row - otherRow), Math.abs(col - otherCol)) < minDist
+            ) {
+              farEnough = false;
+              break;
+            }
+          }
+          if (farEnough) positions.push(pos);
+        }
+        if (positions.length < count) {
+          return [3, 72, 131];
+        }
+        return positions;
+      }
+
+      function buildFlagsBackground() {
+        var container = document.getElementById("flagsBg");
+        if (!container) return;
+
+        var cols = 14;
+        var rows = 10;
+        var total = cols * rows;
+        var dpr = window.devicePixelRatio || 1;
+        var flagSize = dpr >= 2 ? 640 : 320;
+
+        var grid = document.createElement("div");
+        grid.className = "flags-bg-grid";
+
+        var slots = new Array(total);
+        var featuredPositions = pickSpreadPositions(
+          FEATURED_FLAGS.length,
+          total,
+          cols,
+          4
+        );
+        FEATURED_FLAGS.forEach(function (code, i) {
+          slots[featuredPositions[i]] = code;
+        });
+
+        var others = BG_FLAG_CODES.filter(function (code) {
+          return FEATURED_FLAGS.indexOf(code) === -1;
+        });
+        for (var i = others.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = others[i];
+          others[i] = others[j];
+          others[j] = temp;
+        }
+
+        var fillIndex = 0;
+        for (var n = 0; n < total; n++) {
+          if (!slots[n]) {
+            slots[n] = others[fillIndex % others.length];
+            fillIndex++;
+          }
+        }
+
+        for (var m = 0; m < total; m++) {
+          var img = document.createElement("img");
+          img.src =
+            "https://flagcdn.com/w" + flagSize + "/" + slots[m] + ".png";
+          img.alt = "";
+          img.loading = "lazy";
+          img.decoding = "async";
+          grid.appendChild(img);
+        }
+
+        container.innerHTML = "";
+        container.appendChild(grid);
+      }
+
       applyLanguage();
+      buildFlagsBackground();
     </script>
   </body>
 </html>
