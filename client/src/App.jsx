@@ -26,7 +26,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="logo">♠</div>
+        <img className="brand-logo" src="/logo.png" alt="Joker logo" width={72} height={72} />
         <h1>Joker</h1>
         <p className="tagline">Pick a genre. Get a joke. That's it!</p>
       </header>
@@ -80,7 +80,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="footer">Made with ♠ by Joker</footer>
+      <footer className="footer">Made by Joker</footer>
     </div>
   );
 }

@@ -42,11 +42,14 @@ body {
   margin-bottom: 2.5rem;
 }
 
-.logo {
-  font-size: 2.5rem;
-  color: var(--yellow);
-  margin-bottom: 0.25rem;
-  filter: drop-shadow(0 2px 0 rgba(255, 107, 107, 0.25));
+.brand-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 0.5rem;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
 }
 
 .header h1 {
